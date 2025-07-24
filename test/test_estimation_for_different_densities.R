@@ -7,12 +7,12 @@ library(ggplot2)
 set.seed(7)
 
 # Define the weights for the mixture distribution
-mixture_weights = c(1/2, 1/10, 1/10, 1/10, 1/10, 1/10)
+mixture_weights <- c(1/2, 1/10, 1/10, 1/10, 1/10, 1/10)
 
 # Define the parameters for the normal distributions
 # First distribution: N(0, 1)
-means = c(0, -1, -0.5, 0, 0.5, 1)
-sds = c(1, 0.1, 0.1, 0.1, 0.1, 0.1)
+means <- c(0, -1, -0.5, 0, 0.5, 1)
+sds <- c(1, 0.1, 0.1, 0.1, 0.1, 0.1)
 
 samples <- rnorm_mixture(100, means, sds, mixture_weights)
 n <- length(samples)

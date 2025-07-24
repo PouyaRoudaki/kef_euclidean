@@ -126,8 +126,8 @@ Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples,
   double normalizing_cte;
   if (dimension == 1) {
     // 1D case: integrate using trapezoidal rule over grid
-    normalizing_cte = arma::as_scalar(trapz(grids, unnorm_density_grids));
-    //normalizing_cte = arma::dot(base_measure_weights, unnorm_density_samples);
+    //normalizing_cte = arma::as_scalar(trapz(grids, unnorm_density_grids));
+    normalizing_cte = arma::dot(base_measure_weights, unnorm_density_samples);
   } else {
     // Higher-dimensional case: weighted sum over base measure weights
     normalizing_cte = arma::dot(base_measure_weights, unnorm_density_samples);
