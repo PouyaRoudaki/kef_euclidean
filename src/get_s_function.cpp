@@ -14,7 +14,8 @@ arma::vec get_s_function(const arma::vec& weight_vec,
                          const arma::mat& centered_kernel_mat_samples,
                          const arma::vec& samples,
                          const arma::vec& base_measure_weights,
-                         double dimension) {
+                         double dimension,
+                         bool prior_var_prob) {
 
   // Step 1: Sample size
   double n = centered_kernel_mat_samples.n_rows;
@@ -49,11 +50,16 @@ arma::vec get_s_function(const arma::vec& weight_vec,
   //Rcout << "[7] prob_sample_via_base^T * kernel (prob_times_kernel):\n" << prob_times_kernel << std::endl;
 
   // Step 7: Final s computation
-  arma::vec s = lambda * (col_sums.t() - n * prob_times_kernel.t()) -
-    tau * (weight_vec / prob_sample_via_base);
+  arma::vec s;
+  if(prior_var_prob){
+    s = lambda * (col_sums.t() - n * prob_times_kernel.t()) -
+      tau * (weight_vec / prob_sample_via_base);
+  }else{
+    s = lambda * (col_sums.t() - n * prob_times_kernel.t()) -
+      tau * (weight_vec);
+  }
 
   //Rcout << "[8] Final s vector:\n" << s.t() << std::endl;
-
   return s;
 }
 

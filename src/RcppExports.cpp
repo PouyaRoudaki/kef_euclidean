@@ -115,8 +115,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_s_function
-arma::vec get_s_function(const arma::vec& weight_vec, double lambda, double tau, const arma::mat& centered_kernel_mat_samples, const arma::vec& samples, const arma::vec& base_measure_weights, double dimension);
-RcppExport SEXP _kefV1_get_s_function(SEXP weight_vecSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP) {
+arma::vec get_s_function(const arma::vec& weight_vec, double lambda, double tau, const arma::mat& centered_kernel_mat_samples, const arma::vec& samples, const arma::vec& base_measure_weights, double dimension, bool prior_var_prob);
+RcppExport SEXP _kefV1_get_s_function(SEXP weight_vecSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP prior_var_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -127,7 +127,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type samples(samplesSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type base_measure_weights(base_measure_weightsSEXP);
     Rcpp::traits::input_parameter< double >::type dimension(dimensionSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_s_function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension));
+    Rcpp::traits::input_parameter< bool >::type prior_var_prob(prior_var_probSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_s_function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -160,7 +161,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_kefV1_get_dens_wo_grid", (DL_FUNC) &_kefV1_get_dens_wo_grid, 6},
     {"_kefV1_get_dens", (DL_FUNC) &_kefV1_get_dens, 9},
     {"_kefV1_get_middle_points_grid", (DL_FUNC) &_kefV1_get_middle_points_grid, 3},
-    {"_kefV1_get_s_function", (DL_FUNC) &_kefV1_get_s_function, 7},
+    {"_kefV1_get_s_function", (DL_FUNC) &_kefV1_get_s_function, 8},
     {"_kefV1_marginal_log_likelihood", (DL_FUNC) &_kefV1_marginal_log_likelihood, 10},
     {NULL, NULL, 0}
 };

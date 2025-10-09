@@ -10,6 +10,7 @@
 #' @param lambda A numeric scalar for the lambda parameter (regularization term).
 #' @param tau A numeric scalar for the tau parameter.
 #' @param boundaries A numeric vector (for 1D) or matrix (for multi-dimensional input) specifying the domain boundaries. Optional; if not provided, the domain boundaries are extended by 10% around the samples range.
+#' @param prior_var_prob Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter. Default is TRUE.
 #'
 #' @return A list containing:
 #' \itemize{
@@ -33,7 +34,7 @@
 #' result <- kef(samples = samples, grids = grids,lambda = lambda, tau = tau)
 #' plot(grids, result$grids, type = "l", main = "Estimated Density", ylab = "Density")
 
-kef <- function(samples, grids, lambda, tau, boundaries = NULL) {
+kef <- function(samples, grids, lambda, tau, boundaries = NULL, prior_var_prob = TRUE) {
 
   # Start timer
   start_time <- Sys.time()
@@ -144,7 +145,8 @@ kef <- function(samples, grids, lambda, tau, boundaries = NULL) {
     centered_kernel_mat_samples = centered_kernel_mat_samples,
     samples = samples,
     base_measure_weights = base_measure_weights,
-    dimension = dimension
+    dimension = dimension,
+    prior_var_prob = prior_var_prob
   )
 
 

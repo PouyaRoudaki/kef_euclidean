@@ -10,6 +10,7 @@ arma::vec get_s_function(const arma::vec& weight_vec,
                          const arma::mat& centered_kernel_mat_samples,
                          const arma::vec& samples,
                          const arma::vec& base_measure_weights,
-                         double dimension);
+                         double dimension,
+                         bool prior_var_prob);
 
 #endif // GET_S_FUNCTION_H

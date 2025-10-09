@@ -23,10 +23,11 @@ lambda <- 1
 tau <- (lambda^2)/1350
 
 kef_res <- kef(samples,grid = grids,lambda = 1, tau = (lambda^2)/1350)
+kef_res_wo_prob <- kef(samples,grid = grids,lambda = 1, tau = (lambda^2)/100,prior_var_prob = FALSE)
 
 kef_res$time
 
-kef_df <- data.frame(grid = grids, kef_pdf = kef_res$dens_grids)
+kef_df <- data.frame(grid = grids, kef_pdf = kef_res$dens_grids,kef_wo_prob = kef_res_wo_prob$dens_grids)
 #kef_df <- data.frame(grid = samples, kef_pdf = probs)
 
 # Define a matrix of normal densities for each mean and standard deviation
@@ -70,7 +71,12 @@ ggplot() +
   geom_line(data = kde_adaptive_df, aes(x = grid, y = kde_adaptive_pdf, color = 'KDE Adaptive'), linewidth = 2) +
   geom_line(data = kde_fixed_df, aes(x = grid, y = kde_fixed_pdf, color = 'KDE Fixed'), linewidth = 2) +
   geom_line(data = kef_df, aes(x = grid, y = kef_pdf, color = 'KEF'), linewidth = 2) +
-  scale_color_manual(name = "Type of density:", values = c('True Density' = 'red', 'KDE Adaptive' = 'blue','KDE Fixed' = 'limegreen', 'KEF' = 'orange')) +
+  geom_line(data = kef_df, aes(x = grid, y = kef_wo_prob, color = 'KEF_wo_prob'), linewidth = 2) +
+  scale_color_manual(name = "Type of density:", values = c('True Density' = 'red',
+                                                           'KDE Adaptive' = 'blue',
+                                                           'KDE Fixed' = 'limegreen',
+                                                           'KEF' = 'orange',
+                                                           'KEF_wo_prob' = 'purple')) +
   #ggtitle(paste('Kernel Density Estimate for lambda_hat =',
   #              format(lambda,digits = 3,scientific = T),'and tau_hat =',format(tau,digits = 3,scientific = T))) +
   xlab('x') +

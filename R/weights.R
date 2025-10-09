@@ -10,7 +10,8 @@
 #' @param centered_kernel_mat_samples A matrix representing the centered kernel at sampled points.
 #' @param samples A numeric vector of sampled points.
 #' @param base_measure_weights A numeric vector of base measures for sample points.
-#' @param prior_variance_p_vector A numeric vector for prior variance probabilities. Default is NULL.
+#' @param dimension A scalar representing the dimension of sample.
+#' @param prior_var_prob Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.
 #' @param print_trace Logical; if TRUE, prints progress updates.
 #'
 #' @return A numeric vector of estimated weights.
@@ -22,6 +23,7 @@ get_weights <- function(lambda,
                         samples,
                         base_measure_weights,
                         dimension,
+                        prior_var_prob,
                         print_trace = FALSE) {
 
 
@@ -36,7 +38,8 @@ get_weights <- function(lambda,
                              centered_kernel_mat_samples,
                              samples,
                              base_measure_weights,
-                             dimension)
+                             dimension,
+                             prior_var_prob)
 
     # Ensure it's a standard numeric vector
     return(as.numeric(result))

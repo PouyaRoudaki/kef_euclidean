@@ -29,8 +29,8 @@ get_middle_points_grid <- function(min, samples, max) {
     .Call(`_kefV1_get_middle_points_grid`, min, samples, max)
 }
 
-get_s_function <- function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension) {
-    .Call(`_kefV1_get_s_function`, weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension)
+get_s_function <- function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob) {
+    .Call(`_kefV1_get_s_function`, weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob)
 }
 
 marginal_log_likelihood <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, p_vec, lambda, tau, std_rnorm_matrix, MC_iterations, parallel_computing = TRUE) {

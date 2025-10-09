@@ -11,7 +11,8 @@ get_s_function(
   centered_kernel_mat_samples,
   samples,
   base_measure_weights,
-  dimension
+  dimension,
+  prior_var_prob
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ get_s_function(
 
 \item{base_measure_weights}{A numeric vector of base measure weights (same length as \code{samples}).}
 
-\item{dimension}{A scalar indicating the dimensionality of the data.}
+\item{dimension}{A scalar indicating the dimension of the data.}
+
+\item{prior_var_prob}{Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.}
 }
 \value{
 A numeric vector representing the output of the s-function.

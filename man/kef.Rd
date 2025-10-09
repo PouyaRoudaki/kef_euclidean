@@ -4,7 +4,7 @@
 \alias{kef}
 \title{Kernel Density Estimation Using the KEF Method}
 \usage{
-kef(samples, grids, lambda, tau, boundaries = NULL)
+kef(samples, grids, lambda, tau, boundaries = NULL, prior_var_prob = TRUE)
 }
 \arguments{
 \item{samples}{A numeric vector representing the observed samples points.}
@@ -16,6 +16,8 @@ kef(samples, grids, lambda, tau, boundaries = NULL)
 \item{tau}{A numeric scalar for the tau parameter.}
 
 \item{boundaries}{A numeric vector (for 1D) or matrix (for multi-dimensional input) specifying the domain boundaries. Optional; if not provided, the domain boundaries are extended by 10\% around the samples range.}
+
+\item{prior_var_prob}{Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter. Default is TRUE.}
 }
 \value{
 A list containing:

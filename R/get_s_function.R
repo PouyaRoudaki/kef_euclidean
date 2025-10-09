@@ -8,7 +8,8 @@
 #' @param centered_kernel_mat_samples Centered kernel matrix at sampled points (n × n).
 #' @param samples A numeric vector of sampled values.
 #' @param base_measure_weights A numeric vector of base measure weights (same length as `samples`).
-#' @param dimension A scalar indicating the dimensionality of the data.
+#' @param dimension A scalar indicating the dimension of the data.
+#' @param prior_var_prob Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.
 #'
 #' @return A numeric vector representing the output of the s-function.
 #' @export
@@ -18,8 +19,9 @@ get_s_function <- function(weight_vec,
                            centered_kernel_mat_samples,
                            samples,
                            base_measure_weights,
-                           dimension) {
+                           dimension,
+                           prior_var_prob) {
   .Call(`_kefV1_get_s_function`, weight_vec, lambda, tau,
         centered_kernel_mat_samples, samples,
-        base_measure_weights, dimension)
+        base_measure_weights, dimension, prior_var_prob)
 }
