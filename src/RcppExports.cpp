@@ -39,6 +39,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// centered_kernel_matrix_order
+arma::mat centered_kernel_matrix_order(const arma::imat& eval_points_1, const arma::imat& eval_points_2, const arma::imat& centering_grid, double hurst_coef);
+RcppExport SEXP _kefV1_centered_kernel_matrix_order(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::imat& >::type eval_points_1(eval_points_1SEXP);
+    Rcpp::traits::input_parameter< const arma::imat& >::type eval_points_2(eval_points_2SEXP);
+    Rcpp::traits::input_parameter< const arma::imat& >::type centering_grid(centering_gridSEXP);
+    Rcpp::traits::input_parameter< double >::type hurst_coef(hurst_coefSEXP);
+    rcpp_result_gen = Rcpp::wrap(centered_kernel_matrix_order(eval_points_1, eval_points_2, centering_grid, hurst_coef));
+    return rcpp_result_gen;
+END_RCPP
+}
 // unnormalised_density_samples
 arma::vec unnormalised_density_samples(const arma::mat& centered_kernel_mat_samples, double lambda, const arma::vec& weight_vec);
 RcppExport SEXP _kefV1_unnormalised_density_samples(SEXP centered_kernel_mat_samplesSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
@@ -156,6 +170,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_kefV1_centered_kernel_matrix", (DL_FUNC) &_kefV1_centered_kernel_matrix, 4},
     {"_kefV1_centered_kernel_matrix_hd", (DL_FUNC) &_kefV1_centered_kernel_matrix_hd, 4},
+    {"_kefV1_centered_kernel_matrix_order", (DL_FUNC) &_kefV1_centered_kernel_matrix_order, 4},
     {"_kefV1_unnormalised_density_samples", (DL_FUNC) &_kefV1_unnormalised_density_samples, 3},
     {"_kefV1_unnormalised_density_grids", (DL_FUNC) &_kefV1_unnormalised_density_grids, 4},
     {"_kefV1_get_dens_wo_grid", (DL_FUNC) &_kefV1_get_dens_wo_grid, 6},

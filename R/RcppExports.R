@@ -9,6 +9,10 @@ centered_kernel_matrix_hd <- function(eval_points_1, eval_points_2, centering_gr
     .Call(`_kefV1_centered_kernel_matrix_hd`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
 }
 
+centered_kernel_matrix_order <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
+    .Call(`_kefV1_centered_kernel_matrix_order`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
+}
+
 unnormalised_density_samples <- function(centered_kernel_mat_samples, lambda, weight_vec) {
     .Call(`_kefV1_unnormalised_density_samples`, centered_kernel_mat_samples, lambda, weight_vec)
 }
