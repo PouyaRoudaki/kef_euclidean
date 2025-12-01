@@ -4,7 +4,15 @@
 \alias{kef}
 \title{Kernel Density Estimation Using the KEF Method}
 \usage{
-kef(samples, grids, lambda, tau, boundaries = NULL, prior_var_prob = TRUE)
+kef(
+  samples,
+  grids,
+  lambda,
+  tau,
+  data_type = "euclidean",
+  boundaries = NULL,
+  prior_var_prob = TRUE
+)
 }
 \arguments{
 \item{samples}{A numeric vector representing the observed samples points.}
@@ -14,6 +22,8 @@ kef(samples, grids, lambda, tau, boundaries = NULL, prior_var_prob = TRUE)
 \item{lambda}{A numeric scalar for the lambda parameter (regularization term).}
 
 \item{tau}{A numeric scalar for the tau parameter.}
+
+\item{data_type}{String specifying the data type. Options are \code{"euclidean"}, \code{"order"}, or \code{"graph"}. The default is \code{"euclidean"}.}
 
 \item{boundaries}{A numeric vector (for 1D) or matrix (for multi-dimensional input) specifying the domain boundaries. Optional; if not provided, the domain boundaries are extended by 10\% around the samples range.}
 
@@ -43,6 +53,6 @@ samples <- rnorm(500)
 grids <- seq(-3, 3, length.out = 100)
 lambda <- 0.1
 tau <- 0.5
-result <- kef(samples = samples, grids = grids,lambda = lambda, tau = tau)
+result <- kef(samples = samples, grids = grids,lambda = lambda, tau = tau, data_type="euclidean")
 plot(grids, result$grids, type = "l", main = "Estimated Density", ylab = "Density")
 }

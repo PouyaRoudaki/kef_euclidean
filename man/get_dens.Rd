@@ -12,6 +12,7 @@ get_dens(
   grids,
   base_measure_weights,
   dimension,
+  data_type,
   lambda,
   weight_vec
 )
@@ -30,6 +31,8 @@ get_dens(
 \item{base_measure_weights}{Vector of base measure weights (used for normalizing constant if dim > 1).}
 
 \item{dimension}{Dimensionality of the data (1 or higher).}
+
+\item{data_type}{String specifying the data type. Options are \code{"euclidean"}, \code{"order"}, or \code{"graph"}. The default is \code{"euclidean"}.}
 
 \item{lambda}{Scalar lambda parameter.}
 

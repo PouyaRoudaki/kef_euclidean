@@ -14,6 +14,7 @@ double marginal_log_likelihood(
     const arma::vec& samples,
     const arma::vec& base_measure_weights,
     double dimension,
+    const std::string& data_type,
     const arma::vec p_vec,
     double lambda,
     double tau,
@@ -41,8 +42,8 @@ double marginal_log_likelihood(
 #pragma omp parallel for if(parallel_computing) num_threads(omp_get_max_threads())
   for (int i = 0; i < MC_iterations; i++) {
     arma::vec dens_row = get_dens_wo_grid(
-      centered_kernel_mat_samples,samples,base_measure_weights,
-      dimension, lambda, w_sampled.row(i).t()
+      centered_kernel_mat_samples, samples, base_measure_weights,
+      dimension, data_type, lambda, w_sampled.row(i).t()
     );
 
     if (!dens_row.is_finite()) {

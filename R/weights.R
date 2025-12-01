@@ -11,6 +11,7 @@
 #' @param samples A numeric vector of sampled points.
 #' @param base_measure_weights A numeric vector of base measures for sample points.
 #' @param dimension A scalar representing the dimension of sample.
+#' @param data_type String specifying the data type. One of "euclidean", "order", or "graph". The default is "euclidean".
 #' @param prior_var_prob Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.
 #' @param print_trace Logical; if TRUE, prints progress updates.
 #'
@@ -23,6 +24,7 @@ get_weights <- function(lambda,
                         samples,
                         base_measure_weights,
                         dimension,
+                        data_type,
                         prior_var_prob,
                         print_trace = FALSE) {
 
@@ -39,6 +41,7 @@ get_weights <- function(lambda,
                              samples,
                              base_measure_weights,
                              dimension,
+                             data_type,
                              prior_var_prob)
 
     # Ensure it's a standard numeric vector

@@ -4,14 +4,27 @@
 \alias{get_base_measures}
 \title{Compute Base Measure Weights}
 \usage{
-get_base_measures(samples, boundaries, dimension = 1)
+get_base_measures(
+  samples,
+  data_type = "euclidean",
+  dimension = 1,
+  boundaries,
+  method = "auto",
+  parallel_workers = max(1L, parallel::detectCores(logical = TRUE) - 1L)
+)
 }
 \arguments{
-\item{boundaries}{A numeric vector (length 2) for 1D defining min/max bounds, or a 2x2 matrix for 2D, each row defining min/max bounds of each axis.}
+\item{samples}{A numeric vector or matrix of sample points. For 1D, a vector; for 2D, a matrix/data.frame with two columns.}
+
+\item{data_type}{String specifying the data type. One of "euclidean", "order", or "graph". The default is "euclidean".}
 
 \item{dimension}{Integer. Dimensionality of the sample: either 1 or 2.}
 
-\item{sample}{A numeric vector or matrix of sample points. For 1D, a vector; for 2D, a matrix/data.frame with two columns.}
+\item{boundaries}{A numeric vector (length 2) for 1D defining min/max bounds, or a 2x2 matrix for 2D, each row defining min/max bounds of each axis.}
+
+\item{method}{String specifying the method of base measure calculation for ordered data.}
+
+\item{parallel_workers}{Integer. Number of involved cores in the calculation.}
 }
 \value{
 A numeric vector of base measure weights.

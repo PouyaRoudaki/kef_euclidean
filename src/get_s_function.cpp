@@ -12,9 +12,10 @@ arma::vec get_s_function(const arma::vec& weight_vec,
                          double lambda,
                          double tau,
                          const arma::mat& centered_kernel_mat_samples,
-                         const arma::vec& samples,
+                         const arma::mat& samples,
                          const arma::vec& base_measure_weights,
                          double dimension,
+                         const std::string& data_type,
                          bool prior_var_prob) {
 
   // Step 1: Sample size
@@ -26,6 +27,7 @@ arma::vec get_s_function(const arma::vec& weight_vec,
                                     samples,
                                     base_measure_weights,
                                     dimension,
+                                    data_type,
                                     lambda,
                                     weight_vec);
   //Rcout << "[2] Densities (dens):\n" << dens.t() << std::endl;

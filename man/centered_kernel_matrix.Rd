@@ -2,30 +2,39 @@
 % Please edit documentation in R/centered_kernel_matrix.R
 \name{centered_kernel_matrix}
 \alias{centered_kernel_matrix}
-\title{Compute the Centered Kernel Matrix}
+\title{Compute a Centered fBM Kernel Matrix}
 \usage{
 centered_kernel_matrix(
-  dimension,
   eval_points_1,
   eval_points_2,
   centering_grid,
-  hurst_coef
+  hurst_coef,
+  dimension,
+  data_type = "euclidean"
 )
 }
 \arguments{
-\item{dimension}{Integer. Dimensionality of the input space.}
+\item{eval_points_1}{Matrix or numeric vector. First set of evaluation points
+(e.g., x).}
 
-\item{eval_points_1}{Matrix or vector. First set of evaluation points (e.g., \eqn{\bx}).}
+\item{eval_points_2}{Matrix or numeric vector. Second set of evaluation points
+(e.g., x').}
 
-\item{eval_points_2}{Matrix or vector. Second set of evaluation points (e.g., \eqn{\bx'}).}
+\item{centering_grid}{Matrix or numeric vector. Grid used for kernel centering
+(e.g., z1, ..., zn).}
 
 \item{hurst_coef}{Numeric scalar. The Hurst coefficient.}
 
-\item{centering_points}{Matrix or vector. Grid used for kernel centering (e.g., \eqn{\bz_1, \ldots, \bz_n}).}
+\item{dimension}{Integer. Dimensionality of the input space when
+data_type = "euclidean".}
+
+\item{data_type}{String specifying the data type. One of "euclidean",
+"order", or "graph". The default is "euclidean".}
 }
 \value{
 A numeric matrix of kernel evaluations.
 }
 \description{
-This function computes the centered fractional Brownian motion (fBM) kernel matrix.
+Computes the centered fractional Brownian motion (fBM) kernel matrix for
+Euclidean, order, or graph data.
 }

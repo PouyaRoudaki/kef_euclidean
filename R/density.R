@@ -42,8 +42,9 @@ get_dens_wo_grid <- function(centered_kernel_mat_samples, samples, base_measure_
 #' @param centered_kernel_self_grids Self-kernel values at grid points.
 #' @param samples Sampled x values.
 #' @param grids Grid x values.
-#' @param base_measure_weights Vector of base measure weights (used for normalizing constant if dim > 1).
+#' @param base_measure_weights_grid Vector of base measure weights (used for normalizing constant if dim > 1).
 #' @param dimension Dimensionality of the data (1 or higher).
+#' @param data_type String specifying the data type. Options are `"euclidean"`, `"order"`, or `"graph"`. The default is `"euclidean"`.
 #' @param lambda Scalar lambda parameter.
 #' @param weight_vec Vector of weights.
 #' @return A list with normalized densities at sampled and grid points.
@@ -53,11 +54,15 @@ get_dens <- function(centered_kernel_mat_samples,
                      centered_kernel_self_grids,
                      samples,
                      grids,
-                     base_measure_weights,
+                     base_measure_weights_grid,
                      dimension,
+                     data_type,
                      lambda,
                      weight_vec) {
   .Call(`_kefV1_get_dens`, centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids,
-        samples, grids, base_measure_weights, dimension, lambda, weight_vec)
+        samples, grids, base_measure_weights_grid, dimension, data_type, lambda, weight_vec)
 }
+
+
+
 
