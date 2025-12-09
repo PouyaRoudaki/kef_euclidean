@@ -87,6 +87,8 @@ arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples,
       //Rcpp::Rcout << "Min: " << min_val << ", Max: " << max_val << ", Mean: " << mean_val << "\n";
       //normalizing_cte = 1.0;
     //}
+    //double sum_base_measure_weights = arma::sum(base_measure_weights);
+    //Rcpp::Rcout << "Sum of base measure weights: " << sum_base_measure_weights << ".\n";
   }
 
   // Check for invalid normalization constant
@@ -97,9 +99,9 @@ arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples,
 
   arma::vec dens_samples;
   dens_samples = unnorm_density_samples / normalizing_cte;
-  if (data_type == "order" || data_type == "graph") {
-    dens_samples /= arma::sum(dens_samples);
-  }
+  //if (data_type == "order" || data_type == "graph") {
+  //  dens_samples /= arma::sum(dens_samples);
+  //}
 
   if (normalizing_cte < 0) {
     Rcpp::Rcout << "Error: Negative normalizing constant detected. Debug inputs.\n";
@@ -144,6 +146,8 @@ Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples,
     normalizing_cte = arma::dot(base_measure_weights_grid, unnorm_density_grids);
   }
 
+  //Rcpp::Rcout << "Normalizing cte: " << normalizing_cte << ".\n";
+
   // Guard against invalid normalizing constant
   if (normalizing_cte == 0.0 || std::isnan(normalizing_cte) || std::isinf(normalizing_cte)) {
     Rcpp::Rcout << "Error: Normalizing constant is zero, NaN, or Inf in get_dens.\n";
@@ -161,10 +165,10 @@ Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples,
   arma::vec dens_grid_norm    = unnorm_density_grids    / normalizing_cte;
 
   // For order / graph data, renormalize to sum to 1 (discrete distributions)
-  if (data_type == "order" || data_type == "graph") {
-    dens_samples_norm /= arma::sum(dens_samples_norm);
-    dens_grid_norm    /= arma::sum(dens_grid_norm);
-  }
+  //if (data_type == "order" || data_type == "graph") {
+  //  dens_samples_norm /= arma::sum(dens_samples_norm);
+  //  dens_grid_norm    /= arma::sum(dens_grid_norm);
+  //}
 
   // Return normalized densities
   return Rcpp::List::create(

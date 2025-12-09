@@ -191,7 +191,7 @@ kef <- function(samples, grids,
     lambda = lambda,
     tau = tau,
     centered_kernel_mat_samples = centered_kernel_mat_samples,
-    samples = samples,
+    samples = samples_mat,
     base_measure_weights = base_measure_weights,
     dimension = dimension,
     data_type = data_type,
@@ -200,7 +200,8 @@ kef <- function(samples, grids,
 
 
   #message("weights_hat is found successfully.")
-  #print(weights_hat)
+  #cat("First weight:", weights_hat[1], "\n")
+
   #print(summary(weights_hat))
 
   # Compute density estimates based on whether grids evaluation is required
@@ -213,8 +214,8 @@ kef <- function(samples, grids,
       centered_kernel_mat_samples,
       centered_kernel_mat_grids,
       centered_kernel_self_grids,
-      samples,
-      grids,
+      samples_mat,
+      grids_mat,
       base_measure_weights_grids,
       dimension,
       data_type,
@@ -249,7 +250,7 @@ kef <- function(samples, grids,
   } else {
     dens <- get_dens_wo_grid(
       centered_kernel_mat_samples,
-      samples = samples,
+      samples = samples_mat,
       base_measure_weights = base_measure_weights,
       dimension = dimension,
       data_type = data_type,

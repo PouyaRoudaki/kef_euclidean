@@ -11,6 +11,7 @@ get_weights(
   samples,
   base_measure_weights,
   dimension,
+  data_type,
   prior_var_prob,
   print_trace = FALSE
 )
@@ -25,6 +26,8 @@ get_weights(
 \item{base_measure_weights}{A numeric vector of base measures for sample points.}
 
 \item{dimension}{A scalar representing the dimension of sample.}
+
+\item{data_type}{String specifying the data type. One of "euclidean", "order", or "graph". The default is "euclidean".}
 
 \item{prior_var_prob}{Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.}
 

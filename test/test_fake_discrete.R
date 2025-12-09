@@ -7,23 +7,27 @@ library(ggplot2)
 set.seed(7)
 
 # Define the weights for the mixture distribution
-mixture_weights = c(1/2, 1/10, 1/10, 1/10, 1/10, 1/10)
+mixture_weights = c(1/2, 1/2)
 
 # Define the parameters for the normal distributions
 # First distribution: N(0, 1)
-means = c(0, -1, -0.5, 0, 0.5, 1)
-sds = c(1, 0.1, 0.1, 0.1, 0.1, 0.1)
 
-samples <- rnorm_mixture(1000, means, sds, mixture_weights)
+dist_of_peaks <- 10
+sd <- 10^-2
+
+means = c(-dist_of_peaks/2,dist_of_peaks/2)
+sds = c(sd,sd)
+
+samples <- rnorm_mixture(100, means, sds, mixture_weights)
 n <- length(samples)
 
-grids <-  seq(-3.1,3.1,length.out = 4*n)
+grids <-  seq(-10.1,10.1,length.out = 4*n)
 
 lambda <- 1
 tau <- (lambda^2)/1350
 
 #samples <- sort(samples)
-kef_res <- kef(samples,grids = grids,lambda = 1, tau = 1/1350)
+kef_res <- kef(samples,grids = grids,lambda = 1, tau = 1/1350,data_type = "euclidean")
 
 kef_res$time
 
@@ -77,7 +81,7 @@ ggplot() +
   ylab('Density') +
   theme_bw() +
   theme(
-    legend.position.inside = c(1, 1),             # top-right inside plot
+    legend.position = c(1, 1),             # top-right inside plot
     legend.justification = c("right", "top"),
     legend.background = element_rect(color = alpha("black", 0.6)),
     legend.key.size = unit(1.2, "cm"),           # increase size of legend keys
@@ -87,3 +91,7 @@ ggplot() +
   guides(
     color = guide_legend(override.aes = list(size = 3))  # increase line width in legend
   )
+
+
+
+

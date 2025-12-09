@@ -12,7 +12,8 @@ get_s_function(
   samples,
   base_measure_weights,
   dimension,
-  prior_var_prob
+  data_type,
+  prior_var_prob = TRUE
 )
 }
 \arguments{
@@ -24,11 +25,13 @@ get_s_function(
 
 \item{centered_kernel_mat_samples}{Centered kernel matrix at sampled points (n × n).}
 
-\item{samples}{A numeric vector of sampled values.}
+\item{samples}{A numeric matrix of sampled values.}
 
 \item{base_measure_weights}{A numeric vector of base measure weights (same length as \code{samples}).}
 
 \item{dimension}{A scalar indicating the dimension of the data.}
+
+\item{data_type}{String specifying the data type. One of "euclidean", "order", or "graph". The default is "euclidean".}
 
 \item{prior_var_prob}{Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter.}
 }

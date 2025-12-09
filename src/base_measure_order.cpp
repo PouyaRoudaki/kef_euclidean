@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <random>
 #include <numeric>
+#include <unordered_map>
 
 using namespace Rcpp;
 
@@ -75,23 +76,109 @@ std::vector<int> dist_to_obs(const std::vector<int> &x,
   return d;
 }
 
-// Tie-splitting accumulator increment: acc[winners] += 1/|winners|
-void accumulate_winners(std::vector<double> &acc,
-                        const std::vector<int> &d) {
+// ================================
+// Row grouping for "unique points"
+// ================================
+
+// Compute row groups: identical rows get same group ID
+void compute_row_groups(const IntegerMatrix &obs,
+                        std::vector<int> &group_id,
+                        std::vector<int> &group_size) {
+  int m = obs.nrow();
+  int n = obs.ncol();
+
+  group_id.assign(m, -1);
+  group_size.clear();
+
+  std::unordered_map<long long, int> key2id;
+  key2id.reserve(m * 2);
+  long long base = static_cast<long long>(n) + 1LL;
+
+  for (int i = 0; i < m; ++i) {
+    long long key = 0;
+    for (int j = 0; j < n; ++j) {
+      key = key * base + static_cast<long long>(obs(i, j));
+    }
+    auto it = key2id.find(key);
+    int gid;
+    if (it == key2id.end()) {
+      gid = static_cast<int>(group_size.size());
+      key2id[key] = gid;
+      group_size.push_back(0);
+    } else {
+      gid = it->second;
+    }
+    group_id[i] = gid;
+    group_size[gid]++;
+  }
+}
+
+// =========================================================
+// Tie-splitting accumulators
+// =========================================================
+
+// 1) Original method: tie-splitting over ALL winner rows
+//    acc[winners] += 1/|winners|
+void accumulate_winners_all(std::vector<double> &acc,
+                            const std::vector<int> &d) {
   int m = static_cast<int>(d.size());
+  if (m == 0) return;
+
   int md = d[0];
   for (int i = 1; i < m; ++i) {
     if (d[i] < md) md = d[i];
   }
-  // count winners
   int cnt = 0;
   for (int i = 0; i < m; ++i) {
     if (d[i] == md) ++cnt;
   }
   if (cnt == 0) return;
+
   double inc = 1.0 / static_cast<double>(cnt);
   for (int i = 0; i < m; ++i) {
     if (d[i] == md) acc[i] += inc;
+  }
+}
+
+// 2) New method: tie-splitting over UNIQUE POINTS (groups)
+//    - winners = rows with minimal distance
+//    - collapse by group_id -> winning groups
+//    - each winning group g gets 1 / (#winning groups)
+//    - every row in group g gets that same value (no splitting within group)
+void accumulate_winners_unique_groups(std::vector<double> &acc_group,
+                                      const std::vector<int> &d,
+                                      const std::vector<int> &group_id) {
+  int m = static_cast<int>(d.size());
+  if (m == 0) return;
+
+  int md = d[0];
+  for (int i = 1; i < m; ++i) {
+    if (d[i] < md) md = d[i];
+  }
+
+  int G = static_cast<int>(acc_group.size());
+  std::vector<char> is_winning_group(G, 0);
+  int uniq_cnt = 0;
+
+  // mark winning groups
+  for (int i = 0; i < m; ++i) {
+    if (d[i] == md) {
+      int gid = group_id[i];
+      if (!is_winning_group[gid]) {
+        is_winning_group[gid] = 1;
+        ++uniq_cnt;
+      }
+    }
+  }
+  if (uniq_cnt == 0) return;
+
+  double inc_group = 1.0 / static_cast<double>(uniq_cnt);
+
+  // add same increment to each winning group
+  for (int g = 0; g < G; ++g) {
+    if (is_winning_group[g]) {
+      acc_group[g] += inc_group;
+    }
   }
 }
 
@@ -109,28 +196,31 @@ List weights_exact_serial_cpp(const IntegerMatrix &obs) {
   int m = obs.nrow();
   int n = obs.ncol();
   long long W = factorial_int(n);
+  double Wd = static_cast<double>(W);
 
-  // handle m == 1, m == 2
+  // handle m == 1, m == 2 — both measures coincide
   if (m == 1) {
-    NumericVector weights(1);
-    weights[0] = static_cast<double>(W);
+    NumericVector w(1, Wd);
+    NumericVector p(1, 1.0);
     return List::create(
-      _["weights"] = weights,
-      _["total"]   = static_cast<double>(W),
-      _["probs"]   = NumericVector::create(1.0),
-      _["mode"]    = std::string("exact-serial")
+      _["weights"]        = w,
+      _["weights_unique"] = w,
+      _["total"]          = Wd,
+      _["probs"]          = p,
+      _["probs_unique"]   = p,
+      _["mode"]           = std::string("exact-serial")
     );
   }
   if (m == 2) {
-    NumericVector weights(2);
-    weights[0] = static_cast<double>(W) / 2.0;
-    weights[1] = static_cast<double>(W) / 2.0;
-    NumericVector probs(2, 0.5);
+    NumericVector w(2, Wd / 2.0);
+    NumericVector p(2, 0.5);
     return List::create(
-      _["weights"] = weights,
-      _["total"]   = static_cast<double>(W),
-      _["probs"]   = probs,
-      _["mode"]    = std::string("exact-serial")
+      _["weights"]        = w,
+      _["weights_unique"] = w,
+      _["total"]          = Wd,
+      _["probs"]          = p,
+      _["probs_unique"]   = p,
+      _["mode"]           = std::string("exact-serial")
     );
   }
 
@@ -142,29 +232,46 @@ List weights_exact_serial_cpp(const IntegerMatrix &obs) {
     obs_inv[i] = invert_perm(row);
   }
 
+  // row groups (unique points)
+  std::vector<int> group_id, group_size;
+  compute_row_groups(obs, group_id, group_size);
+  int G = static_cast<int>(group_size.size());
+
+  std::vector<double> acc_all(m, 0.0);      // row-level (old method)
+  std::vector<double> acc_group(G, 0.0);    // group-level (new method)
+
   // enumerate all permutations of 1..n
   std::vector<int> perm(n);
   for (int i = 0; i < n; ++i) perm[i] = i + 1;
 
-  std::vector<double> acc(m, 0.0);
-
   do {
     std::vector<int> d = dist_to_obs(perm, obs_inv);
-    accumulate_winners(acc, d);
+    accumulate_winners_all(acc_all, d);                         // method 1
+    accumulate_winners_unique_groups(acc_group, d, group_id);   // method 2
   } while (std::next_permutation(perm.begin(), perm.end()));
 
-  NumericVector weights(m);
-  NumericVector probs(m);
+  NumericVector weights(m), weights_unique(m);
+  NumericVector probs(m), probs_unique(m);
+
   for (int i = 0; i < m; ++i) {
-    weights[i] = acc[i];
-    probs[i]   = acc[i] / static_cast<double>(W);
+    int gid = group_id[i];
+
+    // method 1: row-level
+    weights[i] = acc_all[i];
+    probs[i]   = acc_all[i] / Wd;
+
+    // method 2: group-level, copied to all duplicates
+    weights_unique[i] = acc_group[gid];
+    probs_unique[i]   = acc_group[gid] / Wd;
   }
 
   return List::create(
-    _["weights"] = weights,
-    _["total"]   = static_cast<double>(W),
-    _["probs"]   = probs,
-    _["mode"]    = std::string("exact-serial")
+    _["weights"]        = weights,
+    _["weights_unique"] = weights_unique,
+    _["total"]          = Wd,
+    _["probs"]          = probs,
+    _["probs_unique"]   = probs_unique,
+    _["mode"]           = std::string("exact-serial")
   );
 }
 
@@ -177,27 +284,37 @@ List weights_mc_serial_cpp(const IntegerMatrix &obs,
   int m = obs.nrow();
   int n = obs.ncol();
   long long total_perm = factorial_int(n);
+  double total_perm_d = static_cast<double>(total_perm);
+  double Kd = static_cast<double>(K);
 
   if (m == 1) {
-    NumericVector weights(1);
-    weights[0] = static_cast<double>(K);
+    NumericVector w(1, Kd);
+    NumericVector p(1, 1.0);
     return List::create(
-      _["weights"] = weights,
-      _["total"]   = static_cast<double>(K),
-      _["probs"]   = NumericVector::create(1.0),
-      _["mode"]    = std::string("mc-serial")
+      _["weights"]          = w,
+      _["weights_unique"]   = w,
+      _["total"]            = total_perm_d,
+      _["total_K"]          = Kd,
+      _["weights_K"]        = w,
+      _["weights_unique_K"] = w,
+      _["probs"]            = p,
+      _["probs_unique"]     = p,
+      _["mode"]             = std::string("mc-serial")
     );
   }
   if (m == 2) {
-    NumericVector weights(2);
-    weights[0] = static_cast<double>(K) / 2.0;
-    weights[1] = static_cast<double>(K) / 2.0;
-    NumericVector probs(2, 0.5);
+    NumericVector w(2, Kd / 2.0);
+    NumericVector p(2, 0.5);
     return List::create(
-      _["weights"] = weights,
-      _["total"]   = static_cast<double>(K),
-      _["probs"]   = probs,
-      _["mode"]    = std::string("mc-serial")
+      _["weights"]          = w,
+      _["weights_unique"]   = w,
+      _["total"]            = total_perm_d,
+      _["total_K"]          = Kd,
+      _["weights_K"]        = w,
+      _["weights_unique_K"] = w,
+      _["probs"]            = p,
+      _["probs_unique"]     = p,
+      _["mode"]             = std::string("mc-serial")
     );
   }
 
@@ -209,6 +326,14 @@ List weights_mc_serial_cpp(const IntegerMatrix &obs,
     obs_inv[i] = invert_perm(row);
   }
 
+  // row groups
+  std::vector<int> group_id, group_size;
+  compute_row_groups(obs, group_id, group_size);
+  int G = static_cast<int>(group_size.size());
+
+  std::vector<double> acc_all(m, 0.0);      // rows
+  std::vector<double> acc_group(G, 0.0);    // groups
+
   // RNG
   std::mt19937 rng;
   if (seed > 0) {
@@ -218,35 +343,43 @@ List weights_mc_serial_cpp(const IntegerMatrix &obs,
     rng.seed(rd());
   }
 
-  std::vector<double> acc(m, 0.0);
   std::vector<int> perm(n);
   std::iota(perm.begin(), perm.end(), 1); // 1..n
 
   for (int t = 0; t < K; ++t) {
     std::shuffle(perm.begin(), perm.end(), rng);
     std::vector<int> d = dist_to_obs(perm, obs_inv);
-    accumulate_winners(acc, d);
+    accumulate_winners_all(acc_all, d);
+    accumulate_winners_unique_groups(acc_group, d, group_id);
   }
 
-  NumericVector weights(m);
-  NumericVector weights_K(m);
-  NumericVector probs(m);
-  double Kd = static_cast<double>(K);
-  double total_perm_d = static_cast<double>(total_perm);
+  NumericVector weights(m), weights_K(m), probs(m);
+  NumericVector weights_unique(m), weights_unique_K(m), probs_unique(m);
 
   for (int i = 0; i < m; ++i) {
-    weights_K[i] = acc[i];
-    probs[i]     = acc[i] / Kd;
-    weights[i]   = acc[i] / Kd * total_perm_d;
+    int gid = group_id[i];
+
+    // method 1: row-level splits
+    weights_K[i] = acc_all[i];
+    probs[i]     = acc_all[i] / Kd;
+    weights[i]   = probs[i] * total_perm_d;
+
+    // method 2: group-level, same for all duplicates
+    weights_unique_K[i] = acc_group[gid];
+    probs_unique[i]     = acc_group[gid] / Kd;
+    weights_unique[i]   = probs_unique[i] * total_perm_d;
   }
 
   return List::create(
-    _["weights"]   = weights,
-    _["weights_K"] = weights_K,
-    _["total"]     = total_perm_d,
-    _["total_K"]   = Kd,
-    _["probs"]     = probs,
-    _["mode"]      = std::string("mc-serial")
+    _["weights"]          = weights,
+    _["weights_unique"]   = weights_unique,
+    _["weights_K"]        = weights_K,
+    _["weights_unique_K"] = weights_unique_K,
+    _["total"]            = total_perm_d,
+    _["total_K"]          = Kd,
+    _["probs"]            = probs,
+    _["probs_unique"]     = probs_unique,
+    _["mode"]             = std::string("mc-serial")
   );
 }
 
@@ -297,7 +430,7 @@ List base_measure_order_cpp(IntegerMatrix samples,
                                       K, parallel_workers,
                                       seed, max_exact_factorial);
 
-  // Optional: also return an order of observations by decreasing probability
+  // order is based on the "all-winners" probs (original method)
   NumericVector probs = res["probs"];
   int m = probs.size();
   IntegerVector ord = seq_len(m);

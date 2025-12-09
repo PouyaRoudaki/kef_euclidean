@@ -10,7 +10,7 @@ get_dens(
   centered_kernel_self_grids,
   samples,
   grids,
-  base_measure_weights,
+  base_measure_weights_grid,
   dimension,
   data_type,
   lambda,
@@ -28,7 +28,7 @@ get_dens(
 
 \item{grids}{Grid x values.}
 
-\item{base_measure_weights}{Vector of base measure weights (used for normalizing constant if dim > 1).}
+\item{base_measure_weights_grid}{Vector of base measure weights (used for normalizing constant if dim > 1).}
 
 \item{dimension}{Dimensionality of the data (1 or higher).}
 

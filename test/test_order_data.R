@@ -99,7 +99,7 @@ make_heavy_tail_perm_sampler <- function(
 
 ################################################################################
 
-n <- 6
+n <- 5
 
 ## ZIPF (power-law) – target top prob around 0.4
 S_zipf <- make_heavy_tail_perm_sampler(
@@ -124,7 +124,78 @@ head(data.frame(
 
 ################################################################################
 
-centering_grid <- t(replicate(500, sample.int(n)))  # grid = centering set
+permutations <- function(n) {
+  if (n == 1) return(matrix(1, nrow = 1))
+  prev <- permutations(n - 1)
+  out <- NULL
+  for (i in 1:n) {
+    out <- rbind(out, cbind(i, prev + (prev >= i)))
+  }
+  colnames(out) <- NULL
+  as.matrix(out)
+}
 
-kef(samples = samples,grids = centering_grid,lambda = 1,tau = 1/1000,
+if(factorial(n)<500){
+  centering_grid <- permutations(n)
+}else{
+  centering_grid <- t(replicate(500, sample.int(n)))
+}
+#centering_grid <- t(replicate(500, sample.int(n)))  # grid = centering set
+#centering_grid <- rbind(c(1,2,3), c(1,3,2), c(2,3,1),c(2,1,3), c(3,1,2), c(3,2,1))
+
+kef_result <- kef(samples = samples,grids = centering_grid,lambda = 1,tau = 1/100000,
     data_type = "order")
+
+
+
+## ------------------------------------------------------------
+## Map everything to each sampled permutation (row-wise)
+## ------------------------------------------------------------
+
+# character key for each row of the *support*
+levels_keys <- apply(S_zipf$support, 1, paste, collapse = "-")
+
+# character key for each sampled permutation
+perm_keys <- apply(samples, 1, paste, collapse = "-")
+
+# empirical probabilities on the support (you already computed this)
+emp_zipf <- table(factor(perm_keys, levels = levels_keys)) / nrow(samples)
+
+# indices of each sampled permutation in the support
+idx_support <- match(perm_keys, levels_keys)
+
+# build data frame:
+kef_results_df <- data.frame(
+  sample              = perm_keys,                       # permutation as string
+  true_prob           = S_zipf$probabilities[idx_support],
+  empirical_prob      = as.numeric(emp_zipf[idx_support]),
+  kef_estim_dens      = kef_result$dens_sample          # kef estimated prob (per sample)
+)
+
+# build data frame:
+kef_results_df_grid <- data.frame(
+  grid                = apply(centering_grid, 1, paste, collapse = "-"),                     # permutation as string
+  kef_estim_dens      = kef_result$dens_grids         # kef estimated prob (per sample)
+)
+
+
+
+#sum(get_base_measures(samples,data_type = "order"))
+#get_base_measures(samples,data_type = "order")
+
+head(kef_results_df,10)
+
+library(dplyr)
+kef_results_df_unique<- kef_results_df %>% unique()
+kef_results_df_unique$kef_normalized_prob <- 1/sum(kef_results_df_unique$kef_estim_dens) * kef_results_df_unique$kef_estim_dens
+kef_results_df_unique
+
+kef_results_df <- merge(kef_results_df,kef_results_df_unique,by = names(kef_results_df))
+#sum(kef_results_df$empirical_prob)
+#sum(kef_results_df$kef_estim_prob)
+View(kef_results_df)
+
+base_g <- get_base_measures(centering_grid, "order")
+base_g
+base_s <-  get_base_measures(samples, "order")
+base_s

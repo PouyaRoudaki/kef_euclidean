@@ -31,8 +31,8 @@ unnormalised_density_grids <- function(centered_kernel_mat_grids, centered_kerne
 #' @param weight_vec Vector of weights.
 #' @return Normalized density values at sampled points.
 #' @export
-get_dens_wo_grid <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, lambda, weight_vec) {
-  .Call(`_kefV1_get_dens_wo_grid`, centered_kernel_mat_samples, samples, base_measure_weights, dimension, lambda, weight_vec)
+get_dens_wo_grid <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, lambda, weight_vec) {
+  .Call(`_kefV1_get_dens_wo_grid`, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, lambda, weight_vec)
 }
 
 #' Compute Normalized Densities at Sampled and Grid Points
