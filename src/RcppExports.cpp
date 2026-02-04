@@ -13,7 +13,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // base_measure_order_cpp
 List base_measure_order_cpp(IntegerMatrix samples, std::string method, int parallel_workers, int K, int max_exact_factorial, int seed);
-RcppExport SEXP _kefV1_base_measure_order_cpp(SEXP samplesSEXP, SEXP methodSEXP, SEXP parallel_workersSEXP, SEXP KSEXP, SEXP max_exact_factorialSEXP, SEXP seedSEXP) {
+RcppExport SEXP _kefV2_base_measure_order_cpp(SEXP samplesSEXP, SEXP methodSEXP, SEXP parallel_workersSEXP, SEXP KSEXP, SEXP max_exact_factorialSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -27,9 +27,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// centered_kernel_matrix
-arma::mat centered_kernel_matrix(const arma::vec& eval_points_1, const arma::vec& eval_points_2, const arma::vec& centering_grid, double hurst_coef);
-RcppExport SEXP _kefV1_centered_kernel_matrix(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
+// centered_kernel_matrix_euclidean
+arma::mat centered_kernel_matrix_euclidean(const arma::vec& eval_points_1, const arma::vec& eval_points_2, const arma::vec& centering_grid, double hurst_coef);
+RcppExport SEXP _kefV2_centered_kernel_matrix_euclidean(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,13 +37,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type eval_points_2(eval_points_2SEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type centering_grid(centering_gridSEXP);
     Rcpp::traits::input_parameter< double >::type hurst_coef(hurst_coefSEXP);
-    rcpp_result_gen = Rcpp::wrap(centered_kernel_matrix(eval_points_1, eval_points_2, centering_grid, hurst_coef));
+    rcpp_result_gen = Rcpp::wrap(centered_kernel_matrix_euclidean(eval_points_1, eval_points_2, centering_grid, hurst_coef));
     return rcpp_result_gen;
 END_RCPP
 }
-// centered_kernel_matrix_hd
-arma::mat centered_kernel_matrix_hd(const arma::mat& eval_points_1, const arma::mat& eval_points_2, const arma::mat& centering_grid, double hurst_coef);
-RcppExport SEXP _kefV1_centered_kernel_matrix_hd(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
+// centered_kernel_matrix_hd_euclidean
+arma::mat centered_kernel_matrix_hd_euclidean(const arma::mat& eval_points_1, const arma::mat& eval_points_2, const arma::mat& centering_grid, double hurst_coef);
+RcppExport SEXP _kefV2_centered_kernel_matrix_hd_euclidean(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -51,13 +51,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type eval_points_2(eval_points_2SEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type centering_grid(centering_gridSEXP);
     Rcpp::traits::input_parameter< double >::type hurst_coef(hurst_coefSEXP);
-    rcpp_result_gen = Rcpp::wrap(centered_kernel_matrix_hd(eval_points_1, eval_points_2, centering_grid, hurst_coef));
+    rcpp_result_gen = Rcpp::wrap(centered_kernel_matrix_hd_euclidean(eval_points_1, eval_points_2, centering_grid, hurst_coef));
     return rcpp_result_gen;
 END_RCPP
 }
 // centered_kernel_matrix_order
 arma::mat centered_kernel_matrix_order(const arma::imat& eval_points_1, const arma::imat& eval_points_2, const arma::imat& centering_grid, double hurst_coef);
-RcppExport SEXP _kefV1_centered_kernel_matrix_order(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
+RcppExport SEXP _kefV2_centered_kernel_matrix_order(SEXP eval_points_1SEXP, SEXP eval_points_2SEXP, SEXP centering_gridSEXP, SEXP hurst_coefSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -71,7 +71,7 @@ END_RCPP
 }
 // unnormalised_density_samples
 arma::vec unnormalised_density_samples(const arma::mat& centered_kernel_mat_samples, double lambda, const arma::vec& weight_vec);
-RcppExport SEXP _kefV1_unnormalised_density_samples(SEXP centered_kernel_mat_samplesSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
+RcppExport SEXP _kefV2_unnormalised_density_samples(SEXP centered_kernel_mat_samplesSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -84,7 +84,7 @@ END_RCPP
 }
 // unnormalised_density_grids
 arma::vec unnormalised_density_grids(const arma::mat& centered_kernel_mat_grids, const arma::vec& centered_kernel_self_grids, double lambda, const arma::vec& weight_vec);
-RcppExport SEXP _kefV1_unnormalised_density_grids(SEXP centered_kernel_mat_gridsSEXP, SEXP centered_kernel_self_gridsSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
+RcppExport SEXP _kefV2_unnormalised_density_grids(SEXP centered_kernel_mat_gridsSEXP, SEXP centered_kernel_self_gridsSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -96,9 +96,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_dens_wo_grid
-arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples, const arma::mat& samples, const arma::vec& base_measure_weights, double dimension, const std::string& data_type, double lambda, const arma::vec& weight_vec);
-RcppExport SEXP _kefV1_get_dens_wo_grid(SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP data_typeSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
+// get_dens_wo_grid_euclidean
+arma::vec get_dens_wo_grid_euclidean(const arma::mat& centered_kernel_mat_samples, const arma::mat& samples, const arma::vec& base_measure_weights, double dimension, double lambda, const arma::vec& weight_vec);
+RcppExport SEXP _kefV2_get_dens_wo_grid_euclidean(SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,16 +106,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type samples(samplesSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type base_measure_weights(base_measure_weightsSEXP);
     Rcpp::traits::input_parameter< double >::type dimension(dimensionSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type data_type(data_typeSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type weight_vec(weight_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_dens_wo_grid(centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, lambda, weight_vec));
+    rcpp_result_gen = Rcpp::wrap(get_dens_wo_grid_euclidean(centered_kernel_mat_samples, samples, base_measure_weights, dimension, lambda, weight_vec));
     return rcpp_result_gen;
 END_RCPP
 }
-// get_dens
-Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples, const arma::mat& centered_kernel_mat_grids, const arma::vec& centered_kernel_self_grids, const arma::mat& samples, const arma::mat& grids, const arma::vec& base_measure_weights_grid, int dimension, const std::string& data_type, double lambda, const arma::vec& weight_vec);
-RcppExport SEXP _kefV1_get_dens(SEXP centered_kernel_mat_samplesSEXP, SEXP centered_kernel_mat_gridsSEXP, SEXP centered_kernel_self_gridsSEXP, SEXP samplesSEXP, SEXP gridsSEXP, SEXP base_measure_weights_gridSEXP, SEXP dimensionSEXP, SEXP data_typeSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
+// get_dens_euclidean
+Rcpp::List get_dens_euclidean(const arma::mat& centered_kernel_mat_samples, const arma::mat& centered_kernel_mat_grids, const arma::vec& centered_kernel_self_grids, const arma::mat& samples, const arma::mat& grids, const arma::vec& base_measure_weights_grid, int dimension, double lambda, const arma::vec& weight_vec);
+RcppExport SEXP _kefV2_get_dens_euclidean(SEXP centered_kernel_mat_samplesSEXP, SEXP centered_kernel_mat_gridsSEXP, SEXP centered_kernel_self_gridsSEXP, SEXP samplesSEXP, SEXP gridsSEXP, SEXP base_measure_weights_gridSEXP, SEXP dimensionSEXP, SEXP lambdaSEXP, SEXP weight_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -126,16 +125,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type grids(gridsSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type base_measure_weights_grid(base_measure_weights_gridSEXP);
     Rcpp::traits::input_parameter< int >::type dimension(dimensionSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type data_type(data_typeSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type weight_vec(weight_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_dens(centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, data_type, lambda, weight_vec));
+    rcpp_result_gen = Rcpp::wrap(get_dens_euclidean(centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, lambda, weight_vec));
     return rcpp_result_gen;
 END_RCPP
 }
 // get_middle_points_grid
 arma::vec get_middle_points_grid(double min, const arma::vec& samples, double max);
-RcppExport SEXP _kefV1_get_middle_points_grid(SEXP minSEXP, SEXP samplesSEXP, SEXP maxSEXP) {
+RcppExport SEXP _kefV2_get_middle_points_grid(SEXP minSEXP, SEXP samplesSEXP, SEXP maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -146,9 +144,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// get_s_function
-arma::vec get_s_function(const arma::vec& weight_vec, double lambda, double tau, const arma::mat& centered_kernel_mat_samples, const arma::mat& samples, const arma::vec& base_measure_weights, double dimension, const std::string& data_type, bool prior_var_prob);
-RcppExport SEXP _kefV1_get_s_function(SEXP weight_vecSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP data_typeSEXP, SEXP prior_var_probSEXP) {
+// get_s_function_euclidean
+arma::vec get_s_function_euclidean(const arma::vec& weight_vec, double lambda, double tau, const arma::mat& centered_kernel_mat_samples, const arma::mat& samples, const arma::vec& base_measure_weights, double dimension, bool prior_var_prob);
+RcppExport SEXP _kefV2_get_s_function_euclidean(SEXP weight_vecSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP prior_var_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -159,53 +157,27 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type samples(samplesSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type base_measure_weights(base_measure_weightsSEXP);
     Rcpp::traits::input_parameter< double >::type dimension(dimensionSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type data_type(data_typeSEXP);
     Rcpp::traits::input_parameter< bool >::type prior_var_prob(prior_var_probSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_s_function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, prior_var_prob));
+    rcpp_result_gen = Rcpp::wrap(get_s_function_euclidean(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob));
     return rcpp_result_gen;
 END_RCPP
 }
-// marginal_log_likelihood
-double marginal_log_likelihood(const arma::mat& centered_kernel_mat_samples, const arma::vec& samples, const arma::vec& base_measure_weights, double dimension, const std::string& data_type, const arma::vec p_vec, double lambda, double tau, const arma::mat& std_rnorm_matrix, int MC_iterations, bool parallel_computing);
-RcppExport SEXP _kefV1_marginal_log_likelihood(SEXP centered_kernel_mat_samplesSEXP, SEXP samplesSEXP, SEXP base_measure_weightsSEXP, SEXP dimensionSEXP, SEXP data_typeSEXP, SEXP p_vecSEXP, SEXP lambdaSEXP, SEXP tauSEXP, SEXP std_rnorm_matrixSEXP, SEXP MC_iterationsSEXP, SEXP parallel_computingSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::mat& >::type centered_kernel_mat_samples(centered_kernel_mat_samplesSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type samples(samplesSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type base_measure_weights(base_measure_weightsSEXP);
-    Rcpp::traits::input_parameter< double >::type dimension(dimensionSEXP);
-    Rcpp::traits::input_parameter< const std::string& >::type data_type(data_typeSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type p_vec(p_vecSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type std_rnorm_matrix(std_rnorm_matrixSEXP);
-    Rcpp::traits::input_parameter< int >::type MC_iterations(MC_iterationsSEXP);
-    Rcpp::traits::input_parameter< bool >::type parallel_computing(parallel_computingSEXP);
-    rcpp_result_gen = Rcpp::wrap(marginal_log_likelihood(centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, p_vec, lambda, tau, std_rnorm_matrix, MC_iterations, parallel_computing));
-    return rcpp_result_gen;
-END_RCPP
-}
-
-RcppExport SEXP _kefV1_base_measure_order(SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_kefV1_base_measure_order_cpp", (DL_FUNC) &_kefV1_base_measure_order_cpp, 6},
-    {"_kefV1_centered_kernel_matrix", (DL_FUNC) &_kefV1_centered_kernel_matrix, 4},
-    {"_kefV1_centered_kernel_matrix_hd", (DL_FUNC) &_kefV1_centered_kernel_matrix_hd, 4},
-    {"_kefV1_centered_kernel_matrix_order", (DL_FUNC) &_kefV1_centered_kernel_matrix_order, 4},
-    {"_kefV1_unnormalised_density_samples", (DL_FUNC) &_kefV1_unnormalised_density_samples, 3},
-    {"_kefV1_unnormalised_density_grids", (DL_FUNC) &_kefV1_unnormalised_density_grids, 4},
-    {"_kefV1_get_dens_wo_grid", (DL_FUNC) &_kefV1_get_dens_wo_grid, 7},
-    {"_kefV1_get_dens", (DL_FUNC) &_kefV1_get_dens, 10},
-    {"_kefV1_get_middle_points_grid", (DL_FUNC) &_kefV1_get_middle_points_grid, 3},
-    {"_kefV1_get_s_function", (DL_FUNC) &_kefV1_get_s_function, 9},
-    {"_kefV1_marginal_log_likelihood", (DL_FUNC) &_kefV1_marginal_log_likelihood, 11},
-    {"_kefV1_base_measure_order",           (DL_FUNC) &_kefV1_base_measure_order,            3},
+    {"_kefV2_base_measure_order_cpp", (DL_FUNC) &_kefV2_base_measure_order_cpp, 6},
+    {"_kefV2_centered_kernel_matrix_euclidean", (DL_FUNC) &_kefV2_centered_kernel_matrix_euclidean, 4},
+    {"_kefV2_centered_kernel_matrix_hd_euclidean", (DL_FUNC) &_kefV2_centered_kernel_matrix_hd_euclidean, 4},
+    {"_kefV2_centered_kernel_matrix_order", (DL_FUNC) &_kefV2_centered_kernel_matrix_order, 4},
+    {"_kefV2_unnormalised_density_samples", (DL_FUNC) &_kefV2_unnormalised_density_samples, 3},
+    {"_kefV2_unnormalised_density_grids", (DL_FUNC) &_kefV2_unnormalised_density_grids, 4},
+    {"_kefV2_get_dens_wo_grid_euclidean", (DL_FUNC) &_kefV2_get_dens_wo_grid_euclidean, 6},
+    {"_kefV2_get_dens_euclidean", (DL_FUNC) &_kefV2_get_dens_euclidean, 9},
+    {"_kefV2_get_middle_points_grid", (DL_FUNC) &_kefV2_get_middle_points_grid, 3},
+    {"_kefV2_get_s_function_euclidean", (DL_FUNC) &_kefV2_get_s_function_euclidean, 8},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_kefV1(DllInfo *dll) {
+RcppExport void R_init_kefV2(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

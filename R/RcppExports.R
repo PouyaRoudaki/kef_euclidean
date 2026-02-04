@@ -2,46 +2,42 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 base_measure_order_cpp <- function(samples, method = "auto", parallel_workers = 1L, K = 100000L, max_exact_factorial = 3628800L, seed = -1L) {
-    .Call(`_kefV1_base_measure_order_cpp`, samples, method, parallel_workers, K, max_exact_factorial, seed)
+    .Call(`_kefV2_base_measure_order_cpp`, samples, method, parallel_workers, K, max_exact_factorial, seed)
 }
 
-centered_kernel_matrix <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
-    .Call(`_kefV1_centered_kernel_matrix`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
+centered_kernel_matrix_euclidean <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
+    .Call(`_kefV2_centered_kernel_matrix_euclidean`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
 }
 
-centered_kernel_matrix_hd <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
-    .Call(`_kefV1_centered_kernel_matrix_hd`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
+centered_kernel_matrix_hd_euclidean <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
+    .Call(`_kefV2_centered_kernel_matrix_hd_euclidean`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
 }
 
 centered_kernel_matrix_order <- function(eval_points_1, eval_points_2, centering_grid, hurst_coef) {
-    .Call(`_kefV1_centered_kernel_matrix_order`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
+    .Call(`_kefV2_centered_kernel_matrix_order`, eval_points_1, eval_points_2, centering_grid, hurst_coef)
 }
 
 unnormalised_density_samples <- function(centered_kernel_mat_samples, lambda, weight_vec) {
-    .Call(`_kefV1_unnormalised_density_samples`, centered_kernel_mat_samples, lambda, weight_vec)
+    .Call(`_kefV2_unnormalised_density_samples`, centered_kernel_mat_samples, lambda, weight_vec)
 }
 
 unnormalised_density_grids <- function(centered_kernel_mat_grids, centered_kernel_self_grids, lambda, weight_vec) {
-    .Call(`_kefV1_unnormalised_density_grids`, centered_kernel_mat_grids, centered_kernel_self_grids, lambda, weight_vec)
+    .Call(`_kefV2_unnormalised_density_grids`, centered_kernel_mat_grids, centered_kernel_self_grids, lambda, weight_vec)
 }
 
-get_dens_wo_grid <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, lambda, weight_vec) {
-    .Call(`_kefV1_get_dens_wo_grid`, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, lambda, weight_vec)
+get_dens_wo_grid_euclidean <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, lambda, weight_vec) {
+    .Call(`_kefV2_get_dens_wo_grid_euclidean`, centered_kernel_mat_samples, samples, base_measure_weights, dimension, lambda, weight_vec)
 }
 
-get_dens <- function(centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, data_type, lambda, weight_vec) {
-    .Call(`_kefV1_get_dens`, centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, data_type, lambda, weight_vec)
+get_dens_euclidean <- function(centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, lambda, weight_vec) {
+    .Call(`_kefV2_get_dens_euclidean`, centered_kernel_mat_samples, centered_kernel_mat_grids, centered_kernel_self_grids, samples, grids, base_measure_weights_grid, dimension, lambda, weight_vec)
 }
 
 get_middle_points_grid <- function(min, samples, max) {
-    .Call(`_kefV1_get_middle_points_grid`, min, samples, max)
+    .Call(`_kefV2_get_middle_points_grid`, min, samples, max)
 }
 
-get_s_function <- function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, prior_var_prob) {
-    .Call(`_kefV1_get_s_function`, weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, prior_var_prob)
-}
-
-marginal_log_likelihood <- function(centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, p_vec, lambda, tau, std_rnorm_matrix, MC_iterations, parallel_computing = TRUE) {
-    .Call(`_kefV1_marginal_log_likelihood`, centered_kernel_mat_samples, samples, base_measure_weights, dimension, data_type, p_vec, lambda, tau, std_rnorm_matrix, MC_iterations, parallel_computing)
+get_s_function_euclidean <- function(weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob) {
+    .Call(`_kefV2_get_s_function_euclidean`, weight_vec, lambda, tau, centered_kernel_mat_samples, samples, base_measure_weights, dimension, prior_var_prob)
 }
 

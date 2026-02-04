@@ -1,4 +1,4 @@
-#' Kernel Density Estimation Using the KEF Method
+#' Kernel Density Estimation Using the KEF Method for Euclidean data.
 #'
 #' This function estimates density using kernel exponential family (KEF) methods.
 #' It constructs a kernel matrix and computes weights using the Barzilai-Borwein
@@ -9,7 +9,6 @@
 #' @param grids A numeric vector representing the evaluation grids.
 #' @param lambda A numeric scalar for the lambda parameter (regularization term).
 #' @param tau A numeric scalar for the tau parameter.
-#' @param data_type  String specifying the data type. Options are `"euclidean"`, `"order"`, or `"graph"`. The default is `"euclidean"`.
 #' @param boundaries A numeric vector (for 1D) or matrix (for multi-dimensional input) specifying the domain boundaries. Optional; if not provided, the domain boundaries are extended by 10% around the samples range.
 #' @param prior_var_prob Logical; if TRUE, the variance of prior is proportional to probability itself and a hyper-parameter, else it is only proportional to a hyper-parameter. Default is TRUE.
 #'
@@ -32,20 +31,19 @@
 #' grids <- seq(-3, 3, length.out = 100)
 #' lambda <- 0.1
 #' tau <- 0.5
-#' result <- kef(samples = samples, grids = grids,lambda = lambda, tau = tau, data_type="euclidean")
+#' result <- kef_euclidean(samples = samples, grids = grids,lambda = lambda, tau = tau, data_type="euclidean")
 #' plot(grids, result$grids, type = "l", main = "Estimated Density", ylab = "Density")
 
-kef <- function(samples, grids,
+kef_euclidean <- function(samples, grids,
                 lambda, tau,
-                data_type = "euclidean",
                 boundaries = NULL,
                 prior_var_prob = TRUE) {
 
   # Start timer
   start_time <- Sys.time()
 
-  if (data_type == "euclidean"){
-    message("Euclidean data detected.")
+  #if (data_type == "euclidean"){
+    #message("Euclidean data detected.")
     # Setting default boundaries with 10% padding if the boundaries are not provided.
     if (is.null(boundaries)) {
       if (is.vector(samples)) {
@@ -102,48 +100,47 @@ kef <- function(samples, grids,
       stop("samples must be either a numeric vector or a numeric matrix.")
     }
 
-  } else if (data_type == "order") {
-    message("Order data detected.")
+  #} else if (data_type == "order") {
+  #  message("Order data detected.")
 
     # If samples is a list of permutations, convert to numeric matrix
-    if (is.list(samples)) {
-      samples <- do.call(rbind, samples)  # each element numeric vector
-    }
+  #  if (is.list(samples)) {
+  #    samples <- do.call(rbind, samples)  # each element numeric vector
+  #  }
 
-    if (!is.matrix(samples)) {
-      samples <- as.matrix(samples)
-    }
+  #  if (!is.matrix(samples)) {
+  #    samples <- as.matrix(samples)
+  #  }
 
-    mode(samples) <- "numeric"  # ensure numeric matrix
+  #  mode(samples) <- "numeric"  # ensure numeric matrix
 
-    dimension <- ncol(samples)
-  } else if(data_type == "graph"){
-    message("Graph data detected: this part of the function has not been implemented yet.")
+  #  dimension <- ncol(samples)
+  #} else if(data_type == "graph"){
+  #  message("Graph data detected: this part of the function has not been implemented yet.")
     # If samples is a list of permutations, convert to numeric matrix
-    if (is.list(samples)) {
-      samples <- do.call(rbind, samples)  # each element numeric vector
-    }
+  #  if (is.list(samples)) {
+  #    samples <- do.call(rbind, samples)  # each element numeric vector
+  #  }
 
-    if (!is.matrix(samples)) {
-      samples <- as.matrix(samples)
-    }
+  #  if (!is.matrix(samples)) {
+  #    samples <- as.matrix(samples)
+  #  }
 
-    mode(samples) <- "numeric"  # ensure numeric matrix
+  #  mode(samples) <- "numeric"  # ensure numeric matrix
 
-    dimension <- ncol(samples)
-  } else{
-    stop("Incompatible data type!")
-  }
+  #  dimension <- ncol(samples)
+  #} else{
+  #  stop("Incompatible data type!")
+  #}
 
 
   # Compute the centered kernel matrix at samples
-  centered_kernel_mat_samples <- centered_kernel_matrix(
+  centered_kernel_mat_samples <- centered_kernel_matrix_euclidean(
     eval_points_1 = samples,
     eval_points_2 = samples,
     centering_grid = grids,
     hurst_coef = 0.5,
-    dimension = dimension,
-    data_type = data_type
+    dimension = dimension #,data_type = data_type
   )
 
   #message("centered_kernel_mat_samples is found successfully.")
@@ -158,27 +155,25 @@ kef <- function(samples, grids,
 
   # Compute kernel matrices for the grids if needed
   if (!density_only_samples) {
-    centered_kernel_mat_grids <- centered_kernel_matrix(
+    centered_kernel_mat_grids <- centered_kernel_matrix_euclidean(
       eval_points_1 = samples,
       eval_points_2 = grids,
       centering_grid = grids,
       hurst_coef = 0.5,
-      dimension = dimension,
-      data_type = data_type
+      dimension = dimension #,data_type = data_type
     )
 
-    centered_kernel_self_grids <- diag(centered_kernel_matrix(
+    centered_kernel_self_grids <- diag(centered_kernel_matrix_euclidean(
       eval_points_1 = grids,
       eval_points_2 = grids,
       centering_grid = grids,
       hurst_coef = 0.5,
-      dimension = dimension,
-      data_type = data_type
+      dimension = dimension #,data_type = data_type
     ))
   }
 
   # Estimating the base measure
-  base_measure_weights <- get_base_measures(samples, data_type = data_type,
+  base_measure_weights <- get_base_measures_euclidean(samples, #data_type = data_type,
                                             dimension = dimension, boundaries)
 
   #message("base_measure_weights is found successfully.")
@@ -187,14 +182,14 @@ kef <- function(samples, grids,
   grids_mat   <- if (is.matrix(grids))   grids   else as.matrix(grids)
 
   # Estimate the weight vector using the Barzilai-Borwein optimization method
-  weights_hat <- get_weights(
+  weights_hat <- get_weights_euclidean(
     lambda = lambda,
     tau = tau,
     centered_kernel_mat_samples = centered_kernel_mat_samples,
     samples = samples_mat,
     base_measure_weights = base_measure_weights,
     dimension = dimension,
-    data_type = data_type,
+    #data_type = data_type,
     prior_var_prob = prior_var_prob
   )
 
@@ -207,10 +202,10 @@ kef <- function(samples, grids,
   # Compute density estimates based on whether grids evaluation is required
   if (!density_only_samples) {
 
-    base_measure_weights_grids <- get_base_measures(grids, data_type = data_type,
+    base_measure_weights_grids <- get_base_measures_euclidean(grids, #data_type = data_type,
                                               dimension = dimension, boundaries)
 
-    dens <- get_dens(
+    dens <- get_dens_euclidean(
       centered_kernel_mat_samples,
       centered_kernel_mat_grids,
       centered_kernel_self_grids,
@@ -218,12 +213,13 @@ kef <- function(samples, grids,
       grids_mat,
       base_measure_weights_grids,
       dimension,
-      data_type,
+      #data_type,
       lambda,
       as.vector(weights_hat)
     )
 
-    if(data_type == "euclidean" && dimension == 1){
+    #if(data_type == "euclidean" && dimension == 1){
+    if(dimension == 1){
       # This is required because due to some time saving we sorted samples above
       # and now dens is for sorted index so we need to order it based on input so
       # the user see the correct output.
@@ -244,21 +240,22 @@ kef <- function(samples, grids,
       dens_unnorm_samples = as.vector(dens_unnorm_samples), ##
       dens_grids = as.vector(dens$grids),
       dens_unnorm_grids = as.vector(dens$unnorm_grids),##
-      norm_cte = dens$norm_cte,
-      data_type = data_type
+      norm_cte = dens$norm_cte
+      #,data_type = data_type
     )
   } else {
-    dens <- get_dens_wo_grid(
+    dens <- get_dens_wo_grid_euclidean(
       centered_kernel_mat_samples,
       samples = samples_mat,
       base_measure_weights = base_measure_weights,
       dimension = dimension,
-      data_type = data_type,
+      #data_type = data_type,
       lambda = lambda,
       weight_vec = as.vector(weights_hat)
     )
 
-    if(data_type == "euclidean" && dimension == 1){
+    #if(data_type == "euclidean" && dimension == 1){
+    if(dimension == 1){
       # This is required because due to some time saving we sorted samples above
       # and now dens is for sorted index so we need to order it based on input so
       # the user see the correct output.

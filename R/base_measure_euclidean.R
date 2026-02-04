@@ -1,9 +1,8 @@
-#' Compute Base Measure Weights
+#' Compute Base Measure Weights for Euclidean data
 #'
 #' Computes the base measure weights for either 1D (using grid midpoints) or 2D (using Voronoi tessellation).
 #'
 #' @param samples A numeric vector or matrix of sample points. For 1D, a vector; for 2D, a matrix/data.frame with two columns.
-#' @param data_type String specifying the data type. One of "euclidean", "order", or "graph". The default is "euclidean".
 #' @param boundaries A numeric vector (length 2) for 1D defining min/max bounds, or a 2x2 matrix for 2D, each row defining min/max bounds of each axis.
 #' @param dimension Integer. Dimensionality of the sample: either 1 or 2.
 #' @param method String specifying the method of base measure calculation for ordered data.
@@ -14,13 +13,14 @@
 #' @export
 #'
 #' @examples
-#' get_base_measures(sample = runif(100), boundaries = c(0,1), dimension = 1)
-#' get_base_measures(sample = matrix(runif(200), ncol=2), boundaries = matrix(c(0,1,0,1), nrow=2), dimension = 2)
-get_base_measures <- function(samples, data_type = "euclidean", dimension = 1,
+#' get_base_measures_euclidean(sample = runif(100), boundaries = c(0,1), dimension = 1)
+#' get_base_measures_euclidean(sample = matrix(runif(200), ncol=2), boundaries = matrix(c(0,1,0,1), nrow=2), dimension = 2)
+get_base_measures_euclidean <- function(samples, #data_type = "euclidean",
+                              dimension = 1,
                               boundaries,
-                              method = "auto",
+                              #method = "auto",
                               parallel_workers = max(1L, parallel::detectCores(logical = TRUE) - 1L)) {
-  if (data_type == "euclidean"){
+  #if (data_type == "euclidean"){
 
     if (dimension == 1) {
       # Validate input
@@ -65,15 +65,15 @@ get_base_measures <- function(samples, data_type = "euclidean", dimension = 1,
       stop("Currently, the function only supports 1D or 2D input.")
     }
 
-  } else if(data_type == "order"){
-    base_measure_weights <- .Call(`_kefV1_base_measure_order`, samples,
-          as.character(method),
-          as.integer(parallel_workers))$weights
-  } else if(data_type == "graph"){
-    stop("Graph data detected: this part of the function has not been implemented yet.")
-  } else{
-    stop("Incompatible data type!")
-  }
+  #} else if(data_type == "order"){
+  #  base_measure_weights <- .Call(`_kefV1_base_measure_order`, samples,
+  #        as.character(method),
+  #        as.integer(parallel_workers))$weights
+  #} else if(data_type == "graph"){
+  #  stop("Graph data detected: this part of the function has not been implemented yet.")
+  #} else{
+  #  stop("Incompatible data type!")
+  #}
 
   return(base_measure_weights)
 }

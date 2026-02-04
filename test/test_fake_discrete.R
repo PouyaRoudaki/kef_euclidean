@@ -12,8 +12,8 @@ mixture_weights = c(1/2, 1/2)
 # Define the parameters for the normal distributions
 # First distribution: N(0, 1)
 
-dist_of_peaks <- 10
-sd <- 10^-2
+dist_of_peaks <- 1000
+sd <- 1
 
 means = c(-dist_of_peaks/2,dist_of_peaks/2)
 sds = c(sd,sd)
@@ -21,15 +21,283 @@ sds = c(sd,sd)
 samples <- rnorm_mixture(100, means, sds, mixture_weights)
 n <- length(samples)
 
-grids <-  seq(-10.1,10.1,length.out = 4*n)
+grids <-  seq(-dist_of_peaks,dist_of_peaks,length.out = 4*n)
 
 lambda <- 1
 tau <- (lambda^2)/1350
 
 #samples <- sort(samples)
-kef_res <- kef(samples,grids = grids,lambda = 1, tau = 1/1350,data_type = "euclidean")
+kef_res <- kef(samples,grids = grids,lambda = lambda, tau = tau,data_type = "euclidean")
+
+neg_idx <- which(samples < 0)
+neg_idx[ which.max(samples[neg_idx]) ]
+samples[neg_idx[ which.max(samples[neg_idx]) ]]
+
+pos_idx <- which(samples > 0)
+pos_idx[ which.min(samples[pos_idx]) ]
+samples[pos_idx[ which.min(samples[pos_idx]) ]]
+
+
+
 
 kef_res$time
+################################################################################
+
+library(ggplot2)
+library(scales)
+library(grid)
+
+## 1) plot(samples, kef_res$dens_samples)
+
+df_dens_samples <- data.frame(
+  x   = samples,
+  y   = kef_res$dens_samples
+)
+
+ggplot(df_dens_samples_ord, aes(x = x, y = y)) +
+  geom_point(color = "orange", size = 1) +
+  geom_line(color = "orange", linewidth = 1) +
+  xlab("x") +
+  ylab("Estimated density at samples") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+###############################################################################
+## 2) plot(samples, kef_res$weights)
+
+df_weights <- data.frame(
+  x       = samples,
+  weight  = kef_res$weights
+)
+
+neg_idx <- which(samples < 0)
+i_neg   <- neg_idx[ which.max(samples[neg_idx]) ]
+
+pos_idx <- which(samples > 0)
+i_pos   <- pos_idx[ which.min(samples[pos_idx]) ]
+
+df_weights$color <- "blue"
+df_weights$color[c(i_neg, i_pos)] <- "red"
+
+df_weights$size <- 2
+df_weights$size[c(i_neg, i_pos)] <- 2
+
+df_weights$alpha <- 0.1
+df_weights$alpha[c(i_neg, i_pos)] <- 1
+
+
+
+
+idx_two_smallest <- order(df_weights$weight)[1:2]
+samples[idx_two_smallest]
+
+sorted <- sort(samples)
+which(sorted %in% samples[idx_two_smallest])
+
+min(samples)
+max(samples)
+
+ggplot(df_weights, aes(x = x, y = weight)) +
+  geom_point(aes(color = color, size = size, alpha = alpha)) +
+  scale_color_identity() +     # tells ggplot to use the color values directly
+  xlab("x") +
+  ylab("KEF weights") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+###############################################################################
+df_dens_grids <- data.frame(
+  grid = grids,
+  dens = kef_res$dens_grids
+)
+
+
+
+ggplot(df_dens_grids, aes(x = grid, y = dens)) +
+  geom_line(color = "orange", linewidth = 1) +
+  xlab("x") +
+  ylab("Estimated density on grid") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+################################################################################
+
+
+################################################################################
+###########################       CLAW  1000       ##############################
+################################################################################
+library(spatstat)
+library(ks)
+library(ggplot2)
+set.seed(7)
+
+# Define the weights for the mixture distribution
+mixture_weights = c(1/2, 1/2)
+
+# Define the parameters for the normal distributions
+# First distribution: N(0, 1)
+
+dist_of_peaks <- 100
+sd <- 0.01
+
+means = c(-dist_of_peaks/2,dist_of_peaks/2)
+sds = c(sd,sd)
+
+samples <- rnorm_mixture(100, means, sds, mixture_weights)
+n <- length(samples)
+
+grids <-  seq(-dist_of_peaks,dist_of_peaks,length.out = 4*n)
+
+lambda <- 1
+tau <- (lambda^2)/1350
+
+#samples <- sort(samples)
+kef_res <- kef(samples,grids = grids,lambda = lambda, tau = tau,data_type = "euclidean")
+
+neg_idx <- which(samples < 0)
+neg_idx[ which.max(samples[neg_idx]) ]
+samples[neg_idx[ which.max(samples[neg_idx]) ]]
+
+pos_idx <- which(samples > 0)
+pos_idx[ which.min(samples[pos_idx]) ]
+samples[pos_idx[ which.min(samples[pos_idx]) ]]
+
+
+
+
+kef_res$time
+################################################################################
+
+library(ggplot2)
+library(scales)
+library(grid)
+
+## 1) plot(samples, kef_res$dens_samples)
+
+df_dens_samples <- data.frame(
+  x   = samples,
+  y   = kef_res$dens_samples
+)
+
+ggplot(df_dens_samples_ord, aes(x = x, y = y)) +
+  geom_point(color = "orange", size = 1) +
+  geom_line(color = "orange", linewidth = 1) +
+  xlab("x") +
+  ylab("Estimated density at samples") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+###############################################################################
+## 2) plot(samples, kef_res$weights)
+
+df_weights <- data.frame(
+  x       = samples,
+  weight  = kef_res$weights,
+  base_measure = get_base_measures(samples,boundaries = c(min(grids), max(grids)))
+)
+
+neg_idx <- which(samples < 0)
+i_neg   <- neg_idx[ which.max(samples[neg_idx]) ]
+
+pos_idx <- which(samples > 0)
+i_pos   <- pos_idx[ which.min(samples[pos_idx]) ]
+
+df_weights$color <- "blue"
+df_weights$color[c(i_neg, i_pos)] <- "red"
+
+df_weights$size <- 2
+df_weights$size[c(i_neg, i_pos)] <- 2
+
+df_weights$alpha <- 0.1
+df_weights$alpha[c(i_neg, i_pos)] <- 1
+
+
+
+
+idx_two_smallest <- order(df_weights$weight)[1:2]
+samples[idx_two_smallest]
+
+sorted <- sort(samples)
+which(sorted %in% samples[idx_two_smallest])
+
+min(samples)
+max(samples)
+
+ggplot(df_weights, aes(x = x, y = weight)) +
+  geom_point(aes(color = color, size = size, alpha = alpha)) +
+  scale_color_identity() +     # tells ggplot to use the color values directly
+  xlab("x") +
+  ylab("KEF weights") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+
+ggplot(df_weights, aes(x = x, y = base_measure)) +
+  geom_point(aes(color = color, size = size, alpha = alpha)) +
+  scale_color_identity() +     # tells ggplot to use the color values directly
+  xlab("x") +
+  ylab("KEF weights") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+###############################################################################
+df_dens_grids <- data.frame(
+  grid = grids,
+  dens = kef_res$dens_grids
+)
+
+
+
+ggplot(df_dens_grids, aes(x = grid, y = dens)) +
+  geom_line(color = "orange", linewidth = 1) +
+  xlab("x") +
+  ylab("Estimated density on grid") +
+  theme_bw() +
+  theme(
+    legend.position      = "none",
+    legend.background    = element_rect(color = alpha("black", 0.6)),
+    legend.key.size      = unit(1.2, "cm"),
+    legend.text          = element_text(size = 14),
+    legend.title         = element_text(size = 15)
+  )
+
+
+################################################################################
 
 kef_df <- data.frame(grid = samples, kef_pdf = kef_res$dens_samples)
 

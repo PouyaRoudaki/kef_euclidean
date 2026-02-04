@@ -9,7 +9,7 @@ using namespace Rcpp;
 // [[Rcpp::plugins(openmp)]]
 
 // [[Rcpp::export]]
-arma::mat centered_kernel_matrix_hd(const arma::mat& eval_points_1,
+arma::mat centered_kernel_matrix_hd_euclidean(const arma::mat& eval_points_1,
                                     const arma::mat& eval_points_2,
                                     const arma::mat& centering_grid,
                                     double hurst_coef) {

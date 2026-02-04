@@ -23,7 +23,7 @@ lambda <- 1
 tau <- (lambda^2)/1350
 
 #samples <- sort(samples)
-kef_res <- kef(samples,grids = grids,lambda = 1, tau = 1/1350)
+kef_res <- kef_euclidean(samples,grids = grids,lambda = 1, tau = 1/1350)
 
 kef_res$time
 
@@ -87,3 +87,4 @@ ggplot() +
   guides(
     color = guide_legend(override.aes = list(size = 3))  # increase line width in legend
   )
+

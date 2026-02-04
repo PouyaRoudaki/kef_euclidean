@@ -38,11 +38,10 @@ arma::vec unnormalised_density_grids(const arma::mat& centered_kernel_mat_grids,
 
 // Compute normalized densities at sampled points without a grid
 // [[Rcpp::export]]
-arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples,
+arma::vec get_dens_wo_grid_euclidean(const arma::mat& centered_kernel_mat_samples,
                            const arma::mat& samples,
                            const arma::vec& base_measure_weights,
                            double dimension,
-                           const std::string& data_type,
                            double lambda,
                            const arma::vec& weight_vec) {
 
@@ -68,7 +67,7 @@ arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples,
 
   // Compute normalization constant
   double normalizing_cte;
-  if (data_type == "euclidean" && dimension == 1) {
+  if (dimension == 1) {
     // 1D case: use trapezoidal rule for integration
     arma::vec x = samples.col(0);
     normalizing_cte = arma::as_scalar(trapz(x, unnorm_density_samples));
@@ -113,14 +112,13 @@ arma::vec get_dens_wo_grid(const arma::mat& centered_kernel_mat_samples,
 
 // Compute normalized densities at sampled and grid points
 // [[Rcpp::export]]
-Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples,
+Rcpp::List get_dens_euclidean(const arma::mat& centered_kernel_mat_samples,
                     const arma::mat& centered_kernel_mat_grids,
                     const arma::vec& centered_kernel_self_grids,
                     const arma::mat& samples,
                     const arma::mat& grids,
                     const arma::vec& base_measure_weights_grid,
                     int dimension,
-                    const std::string& data_type,
                     double lambda,
                     const arma::vec& weight_vec) {
 
@@ -137,7 +135,7 @@ Rcpp::List get_dens(const arma::mat& centered_kernel_mat_samples,
 
   // Compute normalization constant
   double normalizing_cte;
-  if (data_type == "euclidean" && dimension == 1) {
+  if (dimension == 1) {
     // 1D Euclidean case: integrate using trapezoidal rule over the grid
     arma::vec x = grids.col(0);
     normalizing_cte = arma::as_scalar(trapz(x, unnorm_density_grids));

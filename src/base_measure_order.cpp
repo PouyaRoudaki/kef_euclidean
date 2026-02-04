@@ -414,7 +414,7 @@ List closest_perm_weights_cpp(const IntegerMatrix &obs,
 
 // =========================================================
 // Exported entry point: base_measure_order
-//   This is what you bind to `_kefV1_base_measure_order`.
+//   This is what you bind to `_kefV2_base_measure_order`.
 // =========================================================
 
 // [[Rcpp::export]]
@@ -448,10 +448,10 @@ List base_measure_order_cpp(IntegerMatrix samples,
 }
 
 // ---------------------------------------------------------
-// If you want *exactly* the symbol `_kefV1_base_measure_order`
+// If you want *exactly* the symbol `_kefV2_base_measure_order`
 // for .Call(), you can add this thin wrapper (and register it).
 // ---------------------------------------------------------
-extern "C" SEXP _kefV1_base_measure_order(SEXP samplesSEXP,
+extern "C" SEXP _kefV2_base_measure_order(SEXP samplesSEXP,
                                          SEXP methodSEXP,
                                          SEXP workersSEXP) {
   IntegerMatrix samples(samplesSEXP);

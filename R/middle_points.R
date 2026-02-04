@@ -13,5 +13,5 @@
 #' @examples
 #' get_middle_points_grid(0, c(2, 4, 6), 8)
 get_middle_points_grid <- function(min, samples, max) {
-  .Call(`_kefV1_get_middle_points_grid`, min, samples, max)
+  .Call(`_kefV2_get_middle_points_grid`, min, samples, max)
 }

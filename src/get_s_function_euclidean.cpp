@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "density.h"
+#include "density_euclidean.h"
 
 using namespace Rcpp;
 using namespace arma;
@@ -8,14 +8,13 @@ using namespace arma;
 
 // Compute the function s(weight_vec)
 // [[Rcpp::export]]
-arma::vec get_s_function(const arma::vec& weight_vec,
+arma::vec get_s_function_euclidean(const arma::vec& weight_vec,
                          double lambda,
                          double tau,
                          const arma::mat& centered_kernel_mat_samples,
                          const arma::mat& samples,
                          const arma::vec& base_measure_weights,
                          double dimension,
-                         const std::string& data_type,
                          bool prior_var_prob) {
 
   // Step 1: Sample size
@@ -23,11 +22,10 @@ arma::vec get_s_function(const arma::vec& weight_vec,
   //Rcout << "[1] Sample size (n): " << n << std::endl;
 
   // Step 2: Compute densities
-  arma::vec dens = get_dens_wo_grid(centered_kernel_mat_samples,
+  arma::vec dens = get_dens_wo_grid_euclidean(centered_kernel_mat_samples,
                                     samples,
                                     base_measure_weights,
                                     dimension,
-                                    data_type,
                                     lambda,
                                     weight_vec);
   //Rcout << "[2] Densities (dens):\n" << dens.t() << std::endl;
